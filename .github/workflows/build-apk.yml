@@ -28,10 +28,12 @@ jobs:
           curl -L --fail -o /tmp/gradle.zip https://services.gradle.org/distributions/gradle-8.10.2-bin.zip
           unzip -q /tmp/gradle.zip -d /opt
           echo "/opt/gradle-8.10.2/bin" >> "$GITHUB_PATH"
-      - name: Build release APK
-        run: gradle --no-daemon :app:assembleRelease
+      - name: Build installable debug APK
+        run: gradle --no-daemon :app:assembleDebug
+      - name: Prepare APK
+        run: cp app/build/outputs/apk/debug/app-debug.apk Gayan-Ganga-Classes.apk
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Gayan-Ganga-Classes-APK
-          path: app/build/outputs/apk/release/app-release.apk
+          path: Gayan-Ganga-Classes.apk
