@@ -21,8 +21,13 @@ jobs:
           java-version: '17'
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
-      - name: Install Android platform
+      - name: Accept Android SDK licenses
         run: yes | sdkmanager --licenses >/dev/null || true
+      - name: Install Gradle 8.10.2
+        run: |
+          curl -L --fail -o /tmp/gradle.zip https://services.gradle.org/distributions/gradle-8.10.2-bin.zip
+          unzip -q /tmp/gradle.zip -d /opt
+          echo "/opt/gradle-8.10.2/bin" >> "$GITHUB_PATH"
       - name: Build release APK
         run: gradle --no-daemon :app:assembleRelease
       - name: Upload APK
