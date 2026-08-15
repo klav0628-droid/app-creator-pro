@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -32,8 +32,17 @@ jobs:
         run: gradle --no-daemon :app:assembleDebug
       - name: Prepare APK
         run: cp app/build/outputs/apk/debug/app-debug.apk Gayan-Ganga-Classes.apk
-      - name: Upload APK
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: Gayan-Ganga-Classes-APK
           path: Gayan-Ganga-Classes.apk
+      - name: Publish permanent GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v1.0.0 >/dev/null 2>&1; then
+            gh release upload v1.0.0 Gayan-Ganga-Classes.apk --clobber
+          else
+            gh release create v1.0.0 Gayan-Ganga-Classes.apk --title "Gayan Ganga Classes v1.0.0" --notes "Gayan Ganga Classes Android APK"
+          fi
